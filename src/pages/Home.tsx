@@ -1,7 +1,6 @@
 
 // importacao de navegacao
 import {useNavigate} from 'react-router-dom';
-import{auth, firebase} from '../services/firebase';
 // Imagens
 import illustrationImg from '../assets/images/illustration.svg';
 import logoImg from '../assets/images/logo.svg';
@@ -13,24 +12,30 @@ import {Button} from '../components/Button';
 // SCSS
 import '../styles/auth.scss';
 
+//Contextos
+import {FormEvent, useContext} from 'react';
+import {AuthContext} from '../context/AuthContext'
+
+
 
 // funcao principal
 export function Home(){
-   
+const {user, signInWithGoogle} = useContext(AuthContext)
 const navigate = useNavigate(); 
 
-function handleCreateRom(){
+async function handleCreateRom(){
 
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).then(result => {
-    console.log(result);
-  })
+  if(!user){
+    signInWithGoogle()
+  }
 
-
-
-  // navigate('/rooms/new')
+  navigate('/rooms/new')
 }
 
+async function handleJoinRoom(event: FormEvent){
+  event.preventDefault();
+
+}
   return(
 
     <div id="page-auth">
@@ -52,7 +57,7 @@ function handleCreateRom(){
             ou entre em uma sala
           </div>
 
-          <form>
+          <form onSubmit={handleJoinRoom}>
             <input 
             type="text"
             placeholder="Digite o codigo da sala"
